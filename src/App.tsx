@@ -11,6 +11,12 @@ import TransactionsPage from './pages/TransactionsPage';
 import ImportPage from './pages/ImportPage';
 import BudgetsPage from './pages/BudgetsPage';
 import ReportsPage from './pages/ReportsPage';
+import RecurringPage from './pages/RecurringPage';
+import RemindersPage from './pages/RemindersPage';
+import GoalsPage from './pages/GoalsPage';
+import NetWorthPage from './pages/NetWorthPage';
+import CategoriesPage from './pages/CategoriesPage';
+import InvestmentsPage from './pages/InvestmentsPage';
 
 // Layout
 import MainLayout from './components/layout/MainLayout';
@@ -127,6 +133,78 @@ function App() {
             user ? (
               <MainLayout user={user}>
                 <ReportsPage />
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/recurring"
+          element={
+            user ? (
+              <MainLayout user={user}>
+                <RecurringPage />
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/reminders"
+          element={
+            user ? (
+              <MainLayout user={user}>
+                <RemindersPage />
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            user ? (
+              <MainLayout user={user}>
+                <GoalsPage />
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/networth"
+          element={
+            user ? (
+              <MainLayout user={user}>
+                <NetWorthPage />
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            user ? (
+              <MainLayout user={user}>
+                <CategoriesPage />
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/investments"
+          element={
+            user ? (
+              <MainLayout user={user}>
+                <InvestmentsPage />
               </MainLayout>
             ) : (
               <Navigate to="/login" replace />
