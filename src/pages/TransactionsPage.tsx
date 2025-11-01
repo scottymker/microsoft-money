@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, ArrowLeftRight } from 'lucide-react';
 import type { Transaction, FilterOptions } from '../types';
 import { getAccounts } from '../services/accounts.service';
 import {
@@ -18,6 +18,8 @@ import { useToast } from '../components/common/ToastContainer';
 import TransactionForm from '../components/transactions/TransactionForm';
 import TransactionList from '../components/transactions/TransactionList';
 import TransactionFilters from '../components/transactions/TransactionFilters';
+import ExportButton from '../components/export/ExportButton';
+import TransferForm from '../components/transfers/TransferForm';
 
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -30,6 +32,7 @@ const TransactionsPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({});
   const [stats, setStats] = useState({ income: 0, expenses: 0, net: 0 });
+  const [showTransferModal, setShowTransferModal] = useState(false);
 
   const { showToast } = useToast();
 
@@ -115,6 +118,11 @@ const TransactionsPage = () => {
     }
   };
 
+  const handleTransferSuccess = () => {
+    setShowTransferModal(false);
+    fetchData();
+  };
+
   const handleToggleReconciled = async (transaction: Transaction) => {
     try {
       await toggleReconciled(transaction.id);
@@ -154,10 +162,21 @@ const TransactionsPage = () => {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Transactions</h1>
-        <Button onClick={handleCreate}>
-          <Plus className="w-5 h-5 mr-2" />
-          Add Transaction
-        </Button>
+        <div className="flex gap-2">
+          <ExportButton
+            data={transactions}
+            filename="transactions"
+            variant="secondary"
+          />
+          <Button onClick={() => setShowTransferModal(true)} variant="secondary">
+            <ArrowLeftRight className="w-5 h-5 mr-2" />
+            Transfer
+          </Button>
+          <Button onClick={handleCreate}>
+            <Plus className="w-5 h-5 mr-2" />
+            Add Transaction
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -220,6 +239,14 @@ const TransactionsPage = () => {
         confirmText="Delete"
         variant="danger"
         loading={submitting}
+      />
+
+      {/* Transfer Modal */}
+      <TransferForm
+        isOpen={showTransferModal}
+        onClose={() => setShowTransferModal(false)}
+        accounts={accounts}
+        onSuccess={handleTransferSuccess}
       />
     </div>
   );
