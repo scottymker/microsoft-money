@@ -46,17 +46,21 @@ export default function InvestmentsPage() {
   const loadAccounts = async () => {
     try {
       const data = await getAccounts(true);
+      console.log('All accounts loaded:', data.length);
       const investmentAccounts = data.filter(
         acc => acc.type === 'investment' || acc.type === 'retirement'
       );
+      console.log('Investment accounts found:', investmentAccounts.length);
       setAccounts(investmentAccounts);
       if (investmentAccounts.length > 0 && !selectedAccountId) {
         setSelectedAccountId('all');
       } else {
         // No investment accounts, stop loading
+        console.log('No investment accounts, setting loading to false');
         setLoading(false);
       }
     } catch (error: any) {
+      console.error('Failed to load accounts:', error);
       showToast(error.message || 'Failed to load accounts', 'error');
       setLoading(false);
     }
@@ -69,7 +73,9 @@ export default function InvestmentsPage() {
       const data = await getInvestmentHoldings(accountId);
       setHoldings(data);
     } catch (error: any) {
+      console.error('Failed to load investment holdings:', error);
       showToast(error.message || 'Failed to load investment holdings', 'error');
+      setHoldings([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -144,7 +150,7 @@ export default function InvestmentsPage() {
 
   const totals = calculateTotals();
 
-  if (loading && accounts.length === 0) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner text="Loading investments..." />;
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
