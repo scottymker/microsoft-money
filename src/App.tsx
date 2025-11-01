@@ -15,6 +15,9 @@ import ReportsPage from './pages/ReportsPage';
 // Layout
 import MainLayout from './components/layout/MainLayout';
 
+// Toast Provider
+import { ToastProvider } from './components/common/ToastContainer';
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +51,8 @@ function App() {
   }
 
   return (
-    <Router basename="/microsoft-money">
+    <ToastProvider>
+      <Router basename="/microsoft-money">
       <Routes>
         {/* Public routes */}
         <Route
@@ -131,6 +135,7 @@ function App() {
         />
       </Routes>
     </Router>
+    </ToastProvider>
   );
 }
 
