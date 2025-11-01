@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../services/supabase';
 import {
   Home,

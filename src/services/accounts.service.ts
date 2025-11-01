@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Account } from '../types';
+import type { Account } from '../types';
 
 /**
  * Get all accounts for current user
@@ -149,11 +149,14 @@ export const reconcileAccount = async (
 
   if (fetchError) throw fetchError;
 
+  type TransactionRow = { id: string; amount: number };
+  const typedTransactions = (transactions || []) as TransactionRow[];
+
   // Calculate what the balance should be
-  const calculatedBalance = transactions?.reduce(
+  const calculatedBalance = typedTransactions.reduce(
     (sum, t) => sum + t.amount,
     0
-  ) || 0;
+  );
 
   const account = await getAccount(accountId);
   const currentReconciled = account.balance - calculatedBalance;
@@ -169,7 +172,7 @@ export const reconcileAccount = async (
   }
 
   // Mark all transactions as reconciled
-  const transactionIds = transactions?.map((t) => t.id) || [];
+  const transactionIds = typedTransactions.map((t) => t.id);
 
   if (transactionIds.length > 0) {
     const { error: updateError } = await supabase

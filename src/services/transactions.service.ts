@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Transaction, FilterOptions } from '../types';
+import type { Transaction, FilterOptions } from '../types';
 
 /**
  * Get all transactions for current user

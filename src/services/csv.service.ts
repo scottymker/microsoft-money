@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { CSVColumnMapping, CSVImportRow } from '../types';
+import type { CSVColumnMapping, CSVImportRow } from '../types';
 
 export interface ParsedCSVData {
   headers: string[];

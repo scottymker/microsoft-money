@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from './services/supabase';
-import { User } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 
 // Pages
 import LoginPage from './pages/LoginPage';
