@@ -42,21 +42,14 @@ const TransactionFilters = ({
     });
   };
 
-  const hasActiveFilters =
-    filters.accountIds?.length ||
-    filters.dateRange ||
-    filters.searchTerm;
-
   return (
     <div className="card mb-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-medium text-gray-900">Filters</h3>
-        {hasActiveFilters && (
-          <Button size="sm" variant="ghost" onClick={onReset}>
-            <X className="w-4 h-4 mr-1" />
-            Reset
-          </Button>
-        )}
+        <Button size="sm" variant="ghost" onClick={onReset}>
+          <X className="w-4 h-4 mr-1" />
+          Reset
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
