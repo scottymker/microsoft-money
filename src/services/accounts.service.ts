@@ -53,7 +53,7 @@ export const createAccount = async (
       ...account,
       user_id: user.id,
       balance: account.opening_balance, // Initialize balance with opening balance
-    })
+    } as any)
     .select()
     .single();
 
@@ -70,7 +70,7 @@ export const updateAccount = async (
 ) => {
   const { data, error } = await supabase
     .from('accounts')
-    .update(updates)
+    .update(updates as any)
     .eq('id', id)
     .select()
     .single();
@@ -177,7 +177,7 @@ export const reconcileAccount = async (
   if (transactionIds.length > 0) {
     const { error: updateError } = await supabase
       .from('transactions')
-      .update({ reconciled: true })
+      .update({ reconciled: true } as any)
       .in('id', transactionIds);
 
     if (updateError) throw updateError;

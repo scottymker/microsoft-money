@@ -107,7 +107,7 @@ export const updateTransaction = async (
 
   const { data, error } = await supabase
     .from('transactions')
-    .update(updates)
+    .update(updates as any)
     .eq('id', id)
     .select()
     .single();
@@ -158,7 +158,7 @@ export const createTransactionsBulk = async (
 
   const { data, error } = await supabase
     .from('transactions')
-    .insert(transactionsWithUser)
+    .insert(transactionsWithUser as any)
     .select();
 
   if (error) throw error;
@@ -199,12 +199,13 @@ const updateAccountBalance = async (accountId: string, amountChange: number) => 
     .single();
 
   if (fetchError) throw fetchError;
+  if (!account) throw new Error('Account not found');
 
   const newBalance = account.balance + amountChange;
 
   const { error: updateError } = await supabase
     .from('accounts')
-    .update({ balance: newBalance })
+    .update({ balance: newBalance } as any)
     .eq('id', accountId);
 
   if (updateError) throw updateError;
