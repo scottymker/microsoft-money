@@ -3,6 +3,7 @@ import type { Transaction } from '../../types';
 import Input from '../common/Input';
 import Select from '../common/Select';
 import Button from '../common/Button';
+import { CATEGORY_OPTIONS } from '../../constants/categories';
 
 interface TransactionFormProps {
   transaction?: Transaction;
@@ -24,7 +25,7 @@ const TransactionForm = ({
     date: new Date().toISOString().split('T')[0],
     amount: '',
     payee: '',
-    category: '',
+    category: 'Uncategorized',
     memo: '',
     reconciled: false,
   });
@@ -126,11 +127,11 @@ const TransactionForm = ({
         error={errors.payee}
       />
 
-      <Input
+      <Select
         label="Category"
         value={formData.category}
         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-        placeholder="Dining"
+        options={CATEGORY_OPTIONS}
         required
         error={errors.category}
       />
