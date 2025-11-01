@@ -48,7 +48,7 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router basename="/microsoft-money">
       <Routes>
         {/* Public routes */}
         <Route
