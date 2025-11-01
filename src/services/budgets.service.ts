@@ -98,13 +98,37 @@ export const getBudgetSpending = async (categoryId: string, period: BudgetPeriod
     endDate = endOfYear(now);
   }
 
+  // Get the category name from the category ID
+  const { data: category, error: categoryError } = await supabase
+    .from('categories')
+    .select('name')
+    .eq('id', categoryId)
+    .single();
+
+  if (categoryError) throw categoryError;
+  if (!category) return 0;
+
+  const categoryName = (category as { name: string }).name;
+
+  // Get all transactions in the date range
   const transactions = await getTransactions({
-    categoryIds: [categoryId],
     dateRange: { start: startDate, end: endDate },
   });
 
+  // Filter by category name (case-insensitive partial match)
+  const categoryTransactions = transactions.filter((t) => {
+    // Match exact category name or if transaction category contains the budget category
+    const transactionCategory = t.category.toLowerCase();
+    const budgetCategory = categoryName.toLowerCase();
+
+    // Handle variations like "Rent/Mortgage" matching "Mortgage" or "Rent"
+    return transactionCategory === budgetCategory ||
+           transactionCategory.includes(budgetCategory) ||
+           budgetCategory.includes(transactionCategory);
+  });
+
   // Sum up expenses (negative amounts)
-  const totalSpent = transactions
+  const totalSpent = categoryTransactions
     .filter((t) => t.amount < 0)
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
