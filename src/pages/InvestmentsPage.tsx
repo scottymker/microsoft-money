@@ -40,7 +40,8 @@ export default function InvestmentsPage() {
     if (accounts.length > 0) {
       fetchHoldings();
     }
-  }, [selectedAccountId, accounts]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAccountId, accounts.length]);
 
   const loadAccounts = async () => {
     try {
@@ -51,9 +52,13 @@ export default function InvestmentsPage() {
       setAccounts(investmentAccounts);
       if (investmentAccounts.length > 0 && !selectedAccountId) {
         setSelectedAccountId('all');
+      } else {
+        // No investment accounts, stop loading
+        setLoading(false);
       }
     } catch (error: any) {
       showToast(error.message || 'Failed to load accounts', 'error');
+      setLoading(false);
     }
   };
 
