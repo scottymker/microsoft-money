@@ -66,7 +66,7 @@ const TransactionList = ({
           {transactions.map((transaction) => (
             <tr key={transaction.id} className="hover:bg-gray-50">
               <td className="px-4 py-3 text-sm text-gray-900">
-                {format(new Date(transaction.date), 'MMM d, yyyy')}
+                {format(new Date(transaction.date + 'T00:00:00'), 'MMM d, yyyy')}
               </td>
               <td className="px-4 py-3 text-sm text-gray-600">
                 {accountsMap.get(transaction.account_id) || 'Unknown'}
