@@ -83,7 +83,7 @@ export const createTransaction = async (
     .insert({
       ...transaction,
       user_id: user.id,
-    })
+    } as any)
     .select()
     .single();
 
@@ -201,7 +201,7 @@ const updateAccountBalance = async (accountId: string, amountChange: number) => 
   if (fetchError) throw fetchError;
   if (!account) throw new Error('Account not found');
 
-  const newBalance = account.balance + amountChange;
+  const newBalance = (account as { balance: number }).balance + amountChange;
 
   const { error: updateError } = await supabase
     .from('accounts')
