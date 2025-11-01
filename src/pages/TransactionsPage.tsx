@@ -19,6 +19,14 @@ import TransactionForm from '../components/transactions/TransactionForm';
 import TransactionList from '../components/transactions/TransactionList';
 import TransactionFilters from '../components/transactions/TransactionFilters';
 
+// Get default date range (current month)
+const getDefaultDateRange = () => {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1);
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return { start, end };
+};
+
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -28,7 +36,9 @@ const TransactionsPage = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | undefined>();
   const [submitting, setSubmitting] = useState(false);
-  const [filters, setFilters] = useState<FilterOptions>({});
+  const [filters, setFilters] = useState<FilterOptions>({
+    dateRange: getDefaultDateRange(),
+  });
   const [stats, setStats] = useState({ income: 0, expenses: 0, net: 0 });
 
   const { showToast } = useToast();
@@ -130,7 +140,9 @@ const TransactionsPage = () => {
   };
 
   const handleResetFilters = () => {
-    setFilters({});
+    setFilters({
+      dateRange: getDefaultDateRange(),
+    });
   };
 
   const formatCurrency = (amount: number) => {
