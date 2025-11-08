@@ -23,7 +23,9 @@ const ColumnMapper = ({
     ...headers.map((h) => ({ value: h, label: h })),
   ];
 
-  const isValid = mapping.date && mapping.amount && mapping.payee;
+  // Valid if we have date, payee, and either amount OR both debit+credit
+  const hasAmount = mapping.amount || (mapping.debit && mapping.credit);
+  const isValid = mapping.date && hasAmount && mapping.payee;
 
   return (
     <Card>
@@ -41,13 +43,50 @@ const ColumnMapper = ({
           required
         />
 
+        <div className="border-l-4 border-blue-500 bg-blue-50 p-3 mb-2">
+          <p className="text-sm text-blue-900 font-medium">Amount Mapping Options:</p>
+          <p className="text-xs text-blue-700 mt-1">
+            Map either a single Amount column OR both Debit and Credit columns
+          </p>
+        </div>
+
         <Select
-          label="Amount Column"
+          label="Amount Column (for single amount column)"
           value={mapping.amount || ''}
-          onChange={(e) => onMappingChange({ ...mapping, amount: e.target.value || undefined })}
+          onChange={(e) => onMappingChange({
+            ...mapping,
+            amount: e.target.value || undefined,
+            // Clear debit/credit if amount is selected
+            ...(e.target.value ? { debit: undefined, credit: undefined } : {})
+          })}
           options={columnOptions}
-          required
         />
+
+        <div className="grid grid-cols-2 gap-4">
+          <Select
+            label="Debit Column (expenses)"
+            value={mapping.debit || ''}
+            onChange={(e) => onMappingChange({
+              ...mapping,
+              debit: e.target.value || undefined,
+              // Clear amount if debit is selected
+              ...(e.target.value ? { amount: undefined } : {})
+            })}
+            options={columnOptions}
+          />
+
+          <Select
+            label="Credit Column (income)"
+            value={mapping.credit || ''}
+            onChange={(e) => onMappingChange({
+              ...mapping,
+              credit: e.target.value || undefined,
+              // Clear amount if credit is selected
+              ...(e.target.value ? { amount: undefined } : {})
+            })}
+            options={columnOptions}
+          />
+        </div>
 
         <Select
           label="Payee/Description Column"

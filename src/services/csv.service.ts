@@ -37,13 +37,27 @@ export const mapCSVRows = (
 ): CSVImportRow[] => {
   return rows.map((row) => {
     const date = mapping.date ? row[mapping.date] : '';
-    const amountStr = mapping.amount ? row[mapping.amount] : '0';
     const payee = mapping.payee ? row[mapping.payee] : 'Unknown';
     const memo = mapping.memo ? row[mapping.memo] : undefined;
     const category = mapping.category ? row[mapping.category] : undefined;
 
-    // Parse amount - handle various formats
-    const amount = parseAmount(amountStr);
+    // Handle amount - either single column or debit/credit columns
+    let amount: number;
+    if (mapping.debit && mapping.credit) {
+      // Separate debit/credit columns
+      const debitStr = row[mapping.debit] || '0';
+      const creditStr = row[mapping.credit] || '0';
+
+      const debitAmount = parseAmount(debitStr);
+      const creditAmount = parseAmount(creditStr);
+
+      // Debit is negative (expense), Credit is positive (income)
+      amount = creditAmount - debitAmount;
+    } else {
+      // Single amount column
+      const amountStr = mapping.amount ? row[mapping.amount] : '0';
+      amount = parseAmount(amountStr);
+    }
 
     // Parse date - handle various formats
     const parsedDate = parseDate(date);

@@ -91,6 +91,8 @@ export interface User {
 export interface CSVColumnMapping {
   date?: string;
   amount?: string;
+  debit?: string;    // For CSVs with separate debit/credit columns
+  credit?: string;   // For CSVs with separate debit/credit columns
   payee?: string;
   memo?: string;
   category?: string;
