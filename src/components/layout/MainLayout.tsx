@@ -14,9 +14,7 @@ import {
   Repeat,
   Bell,
   Target,
-  TrendingUp,
   Tag,
-  Briefcase,
 } from 'lucide-react';
 
 interface MainLayoutProps {
@@ -37,9 +35,7 @@ const MainLayout = ({ children, user }: MainLayoutProps) => {
     { name: 'Recurring', href: '/recurring', icon: Repeat },
     { name: 'Reminders', href: '/reminders', icon: Bell },
     { name: 'Goals', href: '/goals', icon: Target },
-    { name: 'Net Worth', href: '/networth', icon: TrendingUp },
     { name: 'Categories', href: '/categories', icon: Tag },
-    { name: 'Investments', href: '/investments', icon: Briefcase },
   ];
 
   const handleLogout = async () => {

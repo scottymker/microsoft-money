@@ -28,6 +28,7 @@ const TransactionForm = ({
     category: 'Uncategorized',
     memo: '',
     reconciled: false,
+    recurring: false,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -42,6 +43,7 @@ const TransactionForm = ({
         category: transaction.category,
         memo: transaction.memo || '',
         reconciled: transaction.reconciled,
+        recurring: (transaction as any).recurring || false,
       });
     } else if (accounts.length > 0 && !formData.account_id) {
       setFormData((prev) => ({ ...prev, account_id: accounts[0].value }));
@@ -83,7 +85,8 @@ const TransactionForm = ({
       category: formData.category.trim(),
       memo: formData.memo.trim() || undefined,
       reconciled: formData.reconciled,
-    });
+      recurring: formData.recurring,
+    } as any);
   };
 
   return (
@@ -153,6 +156,19 @@ const TransactionForm = ({
         />
         <label htmlFor="reconciled" className="ml-2 text-sm text-gray-700">
           Mark as reconciled
+        </label>
+      </div>
+
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          id="recurring"
+          checked={formData.recurring}
+          onChange={(e) => setFormData({ ...formData, recurring: e.target.checked })}
+          className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+        />
+        <label htmlFor="recurring" className="ml-2 text-sm text-gray-700">
+          Recurring transaction
         </label>
       </div>
 

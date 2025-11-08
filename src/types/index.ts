@@ -40,6 +40,7 @@ export interface Transaction {
   subcategory?: string;
   memo?: string;
   reconciled: boolean;
+  recurring?: boolean; // flag to mark if this is a recurring transaction
   splits?: TransactionSplit[];
   import_id?: string; // for duplicate detection
   transaction_type?: TransactionType;
