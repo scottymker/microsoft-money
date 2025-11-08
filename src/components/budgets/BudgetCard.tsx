@@ -1,5 +1,6 @@
 import { Edit2, Trash2 } from 'lucide-react';
 import Card from '../common/Card';
+import { CATEGORY_OPTIONS } from '../../constants/categories';
 
 interface BudgetCardProps {
   budget: any;
@@ -30,12 +31,16 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
 
   const percentage = Math.min(budget.percentage || 0, 100);
 
+  // Find the category option to get the emoji label
+  const categoryOption = CATEGORY_OPTIONS.find(c => c.value === budget.category_id);
+  const categoryLabel = categoryOption?.label || budget.category_id || 'Unknown Category';
+
   return (
     <Card>
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="font-semibold text-gray-900">
-            {budget.categories?.name || 'Unknown Category'}
+            {categoryLabel}
           </h3>
           <p className="text-xs text-gray-500 capitalize">{budget.period}</p>
         </div>

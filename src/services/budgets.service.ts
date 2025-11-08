@@ -12,7 +12,7 @@ export const getBudgets = async () => {
 
   const { data, error } = await supabase
     .from('budgets')
-    .select('*, categories(*)')
+    .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
@@ -26,7 +26,7 @@ export const getBudgets = async () => {
 export const getBudget = async (id: string) => {
   const { data, error } = await supabase
     .from('budgets')
-    .select('*, categories(*)')
+    .select('*')
     .eq('id', id)
     .single();
 
@@ -84,8 +84,9 @@ export const deleteBudget = async (id: string) => {
 
 /**
  * Get budget spending summary
+ * Note: categoryId now contains the category name (not a UUID), matching the transaction.category field
  */
-export const getBudgetSpending = async (categoryId: string, period: BudgetPeriod) => {
+export const getBudgetSpending = async (categoryName: string, period: BudgetPeriod) => {
   const now = new Date();
   let startDate: Date;
   let endDate: Date;
@@ -97,18 +98,6 @@ export const getBudgetSpending = async (categoryId: string, period: BudgetPeriod
     startDate = startOfYear(now);
     endDate = endOfYear(now);
   }
-
-  // Get the category name from the category ID
-  const { data: category, error: categoryError } = await supabase
-    .from('categories')
-    .select('name')
-    .eq('id', categoryId)
-    .single();
-
-  if (categoryError) throw categoryError;
-  if (!category) return 0;
-
-  const categoryName = (category as { name: string }).name;
 
   // Get all transactions in the date range
   const transactions = await getTransactions({

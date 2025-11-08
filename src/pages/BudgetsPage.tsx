@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { ensureDefaultCategories } from '../services/categories.service';
+import { EXPENSE_CATEGORIES } from '../constants/categories';
 import {
   getBudgetsWithSpending,
   createBudget,
@@ -17,7 +17,6 @@ import BudgetCard from '../components/budgets/BudgetCard';
 
 const BudgetsPage = () => {
   const [budgets, setBudgets] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<any | undefined>();
@@ -34,12 +33,8 @@ const BudgetsPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [budgetsData, categoriesData] = await Promise.all([
-        getBudgetsWithSpending(),
-        ensureDefaultCategories(),
-      ]);
+      const budgetsData = await getBudgetsWithSpending();
       setBudgets(budgetsData);
-      setCategories(categoriesData.filter((c) => c.type === 'expense'));
     } catch (error) {
       showToast('Failed to load budgets', 'error');
       console.error(error);
@@ -100,10 +95,8 @@ const BudgetsPage = () => {
     }
   };
 
-  const categoryOptions = categories.map((c) => ({
-    value: c.id,
-    label: c.name,
-  }));
+  // Use hardcoded expense categories (same as transaction form)
+  const categoryOptions = EXPENSE_CATEGORIES;
 
   if (loading) {
     return <LoadingSpinner text="Loading budgets..." />;
