@@ -36,6 +36,7 @@ CREATE TABLE transactions (
   subcategory TEXT,
   memo TEXT,
   reconciled BOOLEAN DEFAULT false,
+  recurring BOOLEAN DEFAULT false,  -- Flag for recurring transactions
   splits JSONB,
   import_id TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -57,10 +58,12 @@ CREATE TABLE categories (
 );
 
 -- Budgets table
+-- Note: category_id stores the category name (TEXT), not a UUID
+-- This matches how transactions.category works
 CREATE TABLE budgets (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES auth.users NOT NULL,
-  category_id UUID REFERENCES categories ON DELETE CASCADE NOT NULL,
+  category_id TEXT NOT NULL,  -- Category name (matches categories.name)
   amount DECIMAL(12, 2) NOT NULL,
   period TEXT NOT NULL CHECK (period IN ('monthly', 'annual')),
   start_date DATE NOT NULL,
