@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { EXPENSE_CATEGORIES } from '../constants/categories';
+import { ensureDefaultCategories } from '../services/categories.service';
 import {
   getBudgetsWithSpending,
   createBudget,
@@ -17,6 +17,7 @@ import BudgetCard from '../components/budgets/BudgetCard';
 
 const BudgetsPage = () => {
   const [budgets, setBudgets] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<any | undefined>();
@@ -33,8 +34,12 @@ const BudgetsPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const budgetsData = await getBudgetsWithSpending();
+      const [budgetsData, categoriesData] = await Promise.all([
+        getBudgetsWithSpending(),
+        ensureDefaultCategories(),
+      ]);
       setBudgets(budgetsData);
+      setCategories(categoriesData.filter((c) => c.type === 'expense'));
     } catch (error) {
       showToast('Failed to load budgets', 'error');
       console.error(error);
@@ -95,8 +100,11 @@ const BudgetsPage = () => {
     }
   };
 
-  // Use hardcoded expense categories (same as transaction form)
-  const categoryOptions = EXPENSE_CATEGORIES;
+  // Map categories to select options using category name as value
+  const categoryOptions = categories.map((c) => ({
+    value: c.name,
+    label: `${c.icon || ''} ${c.name}`.trim(),
+  }));
 
   if (loading) {
     return <LoadingSpinner text="Loading budgets..." />;
@@ -120,14 +128,21 @@ const BudgetsPage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {budgets.map((budget) => (
-            <BudgetCard
-              key={budget.id}
-              budget={budget}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
-          ))}
+          {budgets.map((budget) => {
+            // Find the category to get the icon
+            const category = categories.find(c => c.name === budget.category_id);
+            const categoryDisplay = category ? `${category.icon || ''} ${category.name}`.trim() : budget.category_id;
+
+            return (
+              <BudgetCard
+                key={budget.id}
+                budget={budget}
+                categoryName={categoryDisplay}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            );
+          })}
         </div>
       )}
 

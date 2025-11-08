@@ -1,14 +1,14 @@
 import { Edit2, Trash2 } from 'lucide-react';
 import Card from '../common/Card';
-import { CATEGORY_OPTIONS } from '../../constants/categories';
 
 interface BudgetCardProps {
   budget: any;
+  categoryName?: string;
   onEdit: (budget: any) => void;
   onDelete: (budget: any) => void;
 }
 
-const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
+const BudgetCard = ({ budget, categoryName, onEdit, onDelete }: BudgetCardProps) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -31,9 +31,8 @@ const BudgetCard = ({ budget, onEdit, onDelete }: BudgetCardProps) => {
 
   const percentage = Math.min(budget.percentage || 0, 100);
 
-  // Find the category option to get the emoji label
-  const categoryOption = CATEGORY_OPTIONS.find(c => c.value === budget.category_id);
-  const categoryLabel = categoryOption?.label || budget.category_id || 'Unknown Category';
+  // Display the category name (budget.category_id contains the category name)
+  const categoryLabel = categoryName || budget.category_id || 'Unknown Category';
 
   return (
     <Card>

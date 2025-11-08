@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, ArrowLeftRight } from 'lucide-react';
 import type { Transaction, FilterOptions } from '../types';
 import { getAccounts } from '../services/accounts.service';
+import { ensureDefaultCategories } from '../services/categories.service';
 import {
   getTransactions,
   createTransaction,
@@ -24,6 +25,7 @@ import TransferForm from '../components/transfers/TransferForm';
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [accounts, setAccounts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | undefined>();
@@ -43,12 +45,14 @@ const TransactionsPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [transactionsData, accountsData] = await Promise.all([
+      const [transactionsData, accountsData, categoriesData] = await Promise.all([
         getTransactions(filters),
         getAccounts(true),
+        ensureDefaultCategories(),
       ]);
       setTransactions(transactionsData);
       setAccounts(accountsData);
+      setCategories(categoriesData);
 
       // Calculate stats
       const income = transactionsData
@@ -154,6 +158,12 @@ const TransactionsPage = () => {
     label: `${a.name} (${a.type})`,
   }));
 
+  // Map categories to select options using category name as value
+  const categoryOptions = categories.map((c) => ({
+    value: c.name,
+    label: `${c.icon || ''} ${c.name}`.trim(),
+  }));
+
   if (loading && transactions.length === 0) {
     return <LoadingSpinner text="Loading transactions..." />;
   }
@@ -223,6 +233,7 @@ const TransactionsPage = () => {
         <TransactionForm
           transaction={selectedTransaction}
           accounts={accountOptions}
+          categories={categoryOptions}
           onSubmit={handleSubmit}
           onCancel={() => setShowModal(false)}
           loading={submitting}

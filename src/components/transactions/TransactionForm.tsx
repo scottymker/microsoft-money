@@ -3,11 +3,11 @@ import type { Transaction } from '../../types';
 import Input from '../common/Input';
 import Select from '../common/Select';
 import Button from '../common/Button';
-import { CATEGORY_OPTIONS } from '../../constants/categories';
 
 interface TransactionFormProps {
   transaction?: Transaction;
   accounts: { value: string; label: string }[];
+  categories: { value: string; label: string }[];
   onSubmit: (data: Partial<Transaction>) => void;
   onCancel: () => void;
   loading?: boolean;
@@ -16,6 +16,7 @@ interface TransactionFormProps {
 const TransactionForm = ({
   transaction,
   accounts,
+  categories,
   onSubmit,
   onCancel,
   loading,
@@ -134,7 +135,7 @@ const TransactionForm = ({
         label="Category"
         value={formData.category}
         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-        options={CATEGORY_OPTIONS}
+        options={categories}
         required
         error={errors.category}
       />
